@@ -30,7 +30,6 @@
 *.tlb
 *.tlh
 *.bak
-*.lib
 *.[Cc]ache
 *.ilk
 *.log
