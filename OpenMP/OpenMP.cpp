@@ -98,7 +98,7 @@ double Reduction()
 	step = 1.0/(double) num_steps; 
 	omp_set_num_threads(NUM_THREADS);
 
-	#pragma omp parallel for reduction(+:sum) private(x) 
+	#pragma omp parallel for reduction(+:sum) private(x)  //sumowanie zmiennej sum, oznaczenie zmiennej x jako prywatna
 	for (i = 1; i <= num_steps; i++)
 	{ 
 		x = (i-0.5)*step; 
