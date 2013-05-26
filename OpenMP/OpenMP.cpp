@@ -5,9 +5,9 @@
 #include <iostream>
 
 // Ustawienie liczby w¹tków.
-#define NUM_THREADS 30
+#define NUM_THREADS 3
 
-static long num_steps = 10000000000;
+static long num_steps = 100000000;
 double step;
 
 double Parallel()
@@ -22,7 +22,7 @@ double Parallel()
 		int i; // osobne i dla ka¿dego w¹tku z osobna		
 		int id = omp_get_thread_num(); // numer w¹tku
 		double x; // zmienna pomocnicza
-		
+
 		// g³ówna pêtla
 		for (i = id, sum[id] = 0.0; i < num_steps; i = i + NUM_THREADS)
 		{ 
@@ -54,38 +54,62 @@ double OneThread()
 	return pi;
 }
 
-double WorkSharingContstruct()
+double WorkSharingConstruct()
 {
-	int i; 	  double x, pi, sum[NUM_THREADS]; 
+	int i; 	  
+	double x, pi, sum[NUM_THREADS]; 
 	step = 1.0/(double) num_steps; 
 	omp_set_num_threads(NUM_THREADS);
-#pragma omp parallel 
-	{	  
+
+	for (int i = 0; i < NUM_THREADS; ++i)
+	{
 		double x;
 		int id; 
 		id = omp_get_thread_num();
 		sum[id] = 0; 
-	#pragma omp for
-		for (i=id;i< num_steps; i++)
+
+#pragma omp for
+		for (i=0;i< num_steps; i++)
 		{ 
 			x = (i+0.5)*step; 
 			sum[id] += 4.0/(1.0+x*x); 
 		} 
-	}	  
-	
+	}
+
 	for(i=0, pi=0.0;i<NUM_THREADS;i++)
 		pi += sum[i] * step; 
 
 	return pi;
 }
 
+double Reduction()
+{
+	int i; 	 
+	double x, pi, sum = 0.0; 
+
+	step = 1.0/(double) num_steps; 
+	omp_set_num_threads(NUM_THREADS);
+
+	#pragma omp parallel for
+	for (i=1;i<= num_steps; i++)
+	{ 
+		x = (i-0.5)*step; 
+		sum = sum + 4.0/(1.0+x*x); 
+	} 
+	pi = step * sum; 
+
+	return pi;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	double pi = WorkSharingContstruct();
-
 	std::cout.precision(50);
-	std::cout << "Parallel SPMD" << Parallel() << std::endl;
-	
+
+	//std::cout << "Parallel SPMD" << Parallel() << std::endl;
+	//std::cout << "Work sharing" << WorkSharingConstruct() << std::endl;
+
+	std::cout << "Reduction" << Reduction() << std::endl;
+
 	_getch();
 
 	return 0;
