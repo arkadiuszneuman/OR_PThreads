@@ -12,8 +12,6 @@
 #include <conio.h>
 #include "Monitor.h"
 
-#define CONSUMER_COUNT 1;
-
 using namespace std;
 
 Monitor monitor;
@@ -61,13 +59,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	pthread_create(&prod, NULL, Producer, NULL);
 	//pthread_create(&cons, NULL, Consumer, NULL);
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < CONSUMER_COUNT; ++i)
 	{
 		pthread_create(&consumers[i], NULL, Consumer, (void*)i);
 	}
 
 	pthread_join(prod, NULL);
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < CONSUMER_COUNT; ++i)
 	{
 		pthread_join(consumers[i], NULL);
 	}

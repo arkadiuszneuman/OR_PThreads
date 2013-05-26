@@ -35,14 +35,17 @@ void Monitor::put(const int value)
 
 int Monitor::get()
 {
-	pthread_mutex_lock(&mutex); /* lock a mutex */
-	/* the queue is empty - wait for products in the queue */
+	pthread_mutex_lock(&mutex);
+
 	if (nr_msg == 0)
 		pthread_cond_wait(&not_empty, &mutex);
-	int value = msgs[head]; /* take a value from the queue */
+	
+	int value = msgs[head];
 	nr_msg--;
 	head = (head + 1) % SIZE;
-	pthread_cond_signal(&not_full); /* signal free place in the queue */
-	pthread_mutex_unlock(&mutex); /* release a mutex */
+
+	pthread_cond_signal(&not_full);
+	pthread_mutex_unlock(&mutex);
+
 	return value;
 }

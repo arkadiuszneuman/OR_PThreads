@@ -1,11 +1,11 @@
 #include "pthread.h"
-
-#define SIZE 10
+#include "Config.h"
 
 class Monitor
 {
 private:
 	int msgs[SIZE];
+	int heads[CONSUMER_COUNT];
 	int tail, head;
 	int nr_msg;
 
