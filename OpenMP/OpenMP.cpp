@@ -5,9 +5,9 @@
 #include <iostream>
 
 // Ustawienie liczby w¹tków.
-#define NUM_THREADS 3
+#define NUM_THREADS 4
 
-static long num_steps = 100000;
+static long num_steps = 1000000000;
 double step;
 
 double Parallel()
@@ -45,9 +45,10 @@ double OneThread()
 	int i;
 	double x, pi, sum = 0.0;
 	step = 1.0/(double) num_steps;
-	for (i=1; i<= num_steps; i++){
+	for (i = 1; i <= num_steps; i++)
+	{
 		x = (i-0.5)*step;
-		sum = sum + 4.0/(1.0+x*x);
+		sum = sum + 4.0/(1.0 + x * x);
 	}
 	pi = step * sum;
 
@@ -68,7 +69,7 @@ double WorkSharingConstruct()
 
 	#pragma omp parallel 
 	{
-		int i; // osobne i dla ka¿dego w¹tku z osobna		
+		int i; // osobne i dla ka¿dego w¹tku z osobna
 		int id = omp_get_thread_num(); // numer w¹tku
 		double x; // zmienna pomocnicza
 
@@ -77,7 +78,7 @@ double WorkSharingConstruct()
 		for (i = 0; i < num_steps; ++i)
 		{ 
 			x = (i+0.5)*step; 
-			sum[id] += 4.0/(1.0+x*x); 
+			sum[id] += 4.0/(1.0 + x * x); 
 		} 
 	}
 
@@ -96,13 +97,13 @@ double Reduction()
 	double x, pi, sum = 0.0; 
 
 	step = 1.0/(double) num_steps; 
-	omp_set_num_threads(NUM_THREADS);
+	omp_set_num_threads(NUM_THREADS); //ustawienie iloœci w¹tków
 
-	#pragma omp parallel for reduction(+:sum) private(x)  //sumowanie zmiennej sum, oznaczenie zmiennej x jako prywatna
-	for (i = 1; i <= num_steps; i++)
+	#pragma omp parallel for reduction(+:sum) private(x)  //zmienna sum bêdzie sumowana przez w¹tki (reduction), oznaczenie zmiennej x jako prywatna
+	for (i = 1; i <= num_steps; i++) //g³ówna pêtla
 	{ 
 		x = (i-0.5)*step; 
-		sum = sum + 4.0/(1.0+x*x); 
+		sum = sum + 4.0/(1.0 + x * x); 
 	} 
 	pi = step * sum; 
 
@@ -111,6 +112,7 @@ double Reduction()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	//wyœwietlenie wyników
 	std::cout.precision(50);
 	std::cout << "Parallel SPMD " << Parallel() << std::endl;
 	std::cout << "Work sharing " << WorkSharingConstruct() << std::endl;
