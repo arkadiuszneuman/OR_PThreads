@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monitor", "Monitor\Monitor.vcxproj", "{9646BE43-1114-415D-BA10-ABB08D527C6F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Semafor", "Semafor\Semafor.vcxproj", "{B7CD4305-EA5C-4C2D-A2B6-550CF16610A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{9646BE43-1114-415D-BA10-ABB08D527C6F}.Debug|Win32.Build.0 = Debug|Win32
 		{9646BE43-1114-415D-BA10-ABB08D527C6F}.Release|Win32.ActiveCfg = Release|Win32
 		{9646BE43-1114-415D-BA10-ABB08D527C6F}.Release|Win32.Build.0 = Release|Win32
+		{B7CD4305-EA5C-4C2D-A2B6-550CF16610A6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B7CD4305-EA5C-4C2D-A2B6-550CF16610A6}.Debug|Win32.Build.0 = Debug|Win32
+		{B7CD4305-EA5C-4C2D-A2B6-550CF16610A6}.Release|Win32.ActiveCfg = Release|Win32
+		{B7CD4305-EA5C-4C2D-A2B6-550CF16610A6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
