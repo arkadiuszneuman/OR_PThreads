@@ -7,7 +7,7 @@ using namespace std;
 class Monitor
 {
 private:
-	Message msgs[SIZE];
+	Message *msgs[SIZE];
 	int heads[CONSUMER_COUNT];
 	int tail, head;
 	int nr_msg;
@@ -19,6 +19,6 @@ private:
 public:
 	Monitor();
 	~Monitor();
-	void put(Message value);
+	void put(Message *value);
 	int get(int threadId);
 };

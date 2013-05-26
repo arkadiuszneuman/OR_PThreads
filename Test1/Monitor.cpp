@@ -5,6 +5,11 @@ Monitor::Monitor()
 {
 	nr_msg = tail = head = 0;
 
+	for (int i = 0; i < SIZE; ++i)
+	{
+		msgs[i] = NULL;
+	}
+
 	pthread_mutex_init(&mutex, NULL);
 	pthread_cond_init(&not_full, NULL);
 	pthread_cond_init(&not_empty, NULL);
@@ -17,17 +22,20 @@ Monitor::~Monitor()
 	pthread_cond_destroy(&not_empty);
 }
 
-void Monitor::put(Message value)
+void Monitor::put(Message *value)
 {
 	pthread_mutex_lock(&mutex);
-	Message message = msgs[tail];
+	Message *message = msgs[tail];
 
-	if (!message.allRead() && message.getMsg() != -1)
+	if (message != NULL && !message->allRead())
 	{
 		cout << "Czekam - producent" << endl;
 		pthread_cond_wait(&not_full, &mutex);
 	}
 
+	if (message != NULL)
+		cout << "Producent: w miejsce " << message->getMsg() << " wstawiam " << value->getMsg() << endl;
+	delete message;
 	msgs[tail] = value;	
 	tail = (tail + 1) % SIZE;
 
@@ -38,20 +46,20 @@ void Monitor::put(Message value)
 int Monitor::get(int threadId)
 {
 	pthread_mutex_lock(&mutex);
-	Message testMessage = msgs[heads[threadId]];
+	Message *testMessage = msgs[heads[threadId]];
 
-	if (testMessage.isRead(threadId) || testMessage.getMsg() == -1)
+	if (testMessage == NULL || testMessage->isRead(threadId))
 	{
 		cout << "Czekam - konsument " << threadId << endl;
 		pthread_cond_wait(&not_empty, &mutex);
 	}
 	
-	Message message = msgs[heads[threadId]];
-	int value = message.getMsg();		
-	message.setRead(threadId);
+	Message *message = msgs[heads[threadId]];
+	int value = message->getMsg();		
+	message->setRead(threadId);
 	heads[threadId] = (heads[threadId] + 1) % SIZE;
 
-	if (message.allRead())
+	if (message->allRead())
 		pthread_cond_signal(&not_full);
 
 	pthread_mutex_unlock(&mutex);

@@ -23,7 +23,7 @@ void *Producer(void *arg)
 	{
 		value = rand() % 100;
 		cout << "Wyprodukowano: " << value << endl;
-		Message message(value);
+		Message *message = new Message(value);
 		monitor.put(message);
 		Sleep(rand() % 5);
 	} while(value);
