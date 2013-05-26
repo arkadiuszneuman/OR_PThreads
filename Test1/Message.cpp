@@ -1,10 +1,18 @@
 #include "stdafx.h"
 #include "Message.h"
 
-
+Message::Message() 
+{
+	msg = -1;	
+}
 Message::Message(int msg)
 {
 	this->msg = msg;
+
+	for (int i = 0; i < CONSUMER_COUNT; ++i)
+	{
+		read[i] = false;
+	}
 }
 
 
@@ -24,4 +32,9 @@ bool Message::allRead()
 void Message::setRead(int threadID)
 {
 	read[threadID] = true;
+}
+
+bool Message::isRead(int threadId)
+{
+	return read[threadId];
 }

@@ -17,34 +17,43 @@ Monitor::~Monitor()
 	pthread_cond_destroy(&not_empty);
 }
 
-void Monitor::put(const int value)
+void Monitor::put(Message value)
 {
 	pthread_mutex_lock(&mutex);
+	Message message = msgs[tail];
 
-	if (nr_msg == SIZE)
+	if (!message.allRead() && message.getMsg() != -1)
+	{
+		cout << "Czekam - producent" << endl;
 		pthread_cond_wait(&not_full, &mutex);
+	}
 
-	msgs[tail] = value;
-	nr_msg++;
+	msgs[tail] = value;	
 	tail = (tail + 1) % SIZE;
-
 
 	pthread_cond_signal(&not_empty);
 	pthread_mutex_unlock(&mutex);
 }
 
-int Monitor::get()
+int Monitor::get(int threadId)
 {
 	pthread_mutex_lock(&mutex);
+	Message testMessage = msgs[heads[threadId]];
 
-	if (nr_msg == 0)
+	if (testMessage.isRead(threadId) || testMessage.getMsg() == -1)
+	{
+		cout << "Czekam - konsument " << threadId << endl;
 		pthread_cond_wait(&not_empty, &mutex);
+	}
 	
-	int value = msgs[head];
-	nr_msg--;
-	head = (head + 1) % SIZE;
+	Message message = msgs[heads[threadId]];
+	int value = message.getMsg();		
+	message.setRead(threadId);
+	heads[threadId] = (heads[threadId] + 1) % SIZE;
 
-	pthread_cond_signal(&not_full);
+	if (message.allRead())
+		pthread_cond_signal(&not_full);
+
 	pthread_mutex_unlock(&mutex);
 
 	return value;

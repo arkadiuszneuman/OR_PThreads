@@ -1,4 +1,4 @@
 #include "stdafx.h"
 
-#define SIZE 10
-#define CONSUMER_COUNT 1
+#define SIZE 3
+#define CONSUMER_COUNT 2

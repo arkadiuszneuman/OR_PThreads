@@ -12,6 +12,7 @@ private:
 	bool read[CONSUMER_COUNT];
 
 public:
+	Message();
 	Message(int msg);
 	~Message(void);
 
@@ -19,5 +20,6 @@ public:
 
 	void setRead(int threadId);
 	bool allRead();	
+	bool isRead(int threadid);
 };
 

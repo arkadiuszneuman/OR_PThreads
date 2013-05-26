@@ -23,7 +23,8 @@ void *Producer(void *arg)
 	{
 		value = rand() % 100;
 		cout << "Wyprodukowano: " << value << endl;
-		monitor.put(value);
+		Message message(value);
+		monitor.put(message);
 		Sleep(rand() % 5);
 	} while(value);
 
@@ -39,9 +40,9 @@ void *Consumer(void *arg)
 	do
 	{
 		int threadId = (int)arg;
-		value = monitor.get();
+		value = monitor.get(threadId);
 		cout << "Watek: " << threadId << " Pobrano: " << value << endl;
-		Sleep(rand() % 5);
+		Sleep(rand() % 50);
 	} while (value);
 
 	pthread_exit(NULL);
@@ -56,13 +57,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	srand(time(0));
 
-	pthread_create(&prod, NULL, Producer, NULL);
-	//pthread_create(&cons, NULL, Consumer, NULL);
-
 	for (int i = 0; i < CONSUMER_COUNT; ++i)
 	{
 		pthread_create(&consumers[i], NULL, Consumer, (void*)i);
 	}
+
+	pthread_create(&prod, NULL, Producer, NULL);
 
 	pthread_join(prod, NULL);
 	for (int i = 0; i < CONSUMER_COUNT; ++i)
