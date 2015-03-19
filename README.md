@@ -1,2 +1,2 @@
-OR_PThreads
+OR_PThreads University Project
 ===========
